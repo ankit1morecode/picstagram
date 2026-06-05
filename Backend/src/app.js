@@ -2,9 +2,10 @@ let express = require("express");
 let postModel = require("./models/user.model.js");
 let multer = require("multer");
 let uploadFile = require("./services/storage.service.js");
+let cors = require("cors");
 let app = express();
 app.use(express.json());   // for getting data in json formaat
-
+app.use(cors());
 /*
     GET /feed
     POST /newpost
@@ -12,10 +13,10 @@ app.use(express.json());   // for getting data in json formaat
 
 let upload = multer({storage:multer.memoryStorage()});   //for uploading file 
 
-app.post('/newpost',upload.single("img-url"),async(req,res)=>{
+app.post('/newpost',upload.single("image"),async(req,res)=>{
     let result = await uploadFile(req.file.buffer);
     let post = await postModel.create({
-        img_url: result.url,
+        image: result.url,
         caption : req.body.caption
     })
     res.status(201).json({

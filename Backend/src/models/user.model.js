@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 let post = new mongoose.Schema({
-    img_url : String,
+    image : String,
     caption : String
 })
 
