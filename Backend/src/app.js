@@ -1,36 +1,15 @@
 let express = require("express");
-let postModel = require("./models/user.model.js");
-let multer = require("multer");
-let uploadFile = require("./services/storage.service.js");
+const authRoutes = require("../src/routes/auth.routes.js")
+const postRoutes = require("../src/routes/post.routes.js")
+const cookieParser = require("cookie-parser");
 let cors = require("cors");
+
 let app = express();
-app.use(express.json());   // for getting data in json formaat
+
+app.use(express.json());
 app.use(cors());
-/*
-    GET /feed
-    POST /newpost
-*/
-
-let upload = multer({storage:multer.memoryStorage()});   //for uploading file 
-
-app.post('/newpost',upload.single("image"),async(req,res)=>{
-    let result = await uploadFile(req.file.buffer);
-    let post = await postModel.create({
-        image: result.url,
-        caption : req.body.caption
-    })
-    res.status(201).json({
-        message : "post created successfully",
-        post
-    })
-})
-
-app.get('/feed',async (req,res)=>{
-    let data = await postModel.find();
-    res.status(200).json({
-        message : "post fetched successfully",
-        posts : data
-    })
-})
+app.use(cookieParser());
+app.use("/api/auth",authRoutes);
+app.use("/api/post",postRoutes);
 
 module.exports = app;
