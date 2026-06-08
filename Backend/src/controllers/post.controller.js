@@ -1,11 +1,14 @@
 const postModel = require("../models/post.model");
-let uploadFile = require("../services/storage.service");
+const uploadFile = require("../services/storage.service");
 
-async function createPost(req, res){ 
+
+async function createPost(req, res){
+    let user = req.user; 
     let result = await uploadFile(req.file.buffer);
     let post = await postModel.create({
         image: result.url,
-        caption: req.body.caption
+        caption: req.body.caption,
+        author : user.id
     })
     res.status(201).json({
         message: "post created successfully",
@@ -20,5 +23,7 @@ async function getPosts(req,res){
         posts
     })
 }
+
+
 
 module.exports = {createPost,getPosts};
