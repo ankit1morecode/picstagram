@@ -1,36 +1,64 @@
-import React from 'react'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import API from "../api/Api";
 
 function CreatePost() {
-  let navigate = useNavigate();
-  const handleSubmit = (e)=>{
-    e.preventDefault();
-    let formData = new FormData(e.target);
-    axios.post("http://localhost:3000/newpost",formData).then(()=>{
-      navigate("/feed");
-      alert("post created succesfully");
-      e.target.reset();
-    }).catch((e)=>{
-      console.log(e);
-      alert("error creating post");
-    })
-  }
-  return (
-    <section className='create-post-section'>
-        <h1>
-            Create Post
-        </h1>
-        <br /><br />
-        <form onSubmit={handleSubmit}>
-            <input type="file" name="image" accept='image/*'/>
-            <br /><br />
-            <input type="text" name='caption' placeholder='enter caption here' required/>
-            <br /><br />
-            <button type="submit">Submit</button>
-        </form>
-    </section>
-  )
+
+    const [title, setTitle] = useState("");
+    const [caption, setCaption] = useState("");
+    const [image, setImage] = useState(null);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+
+        formData.append("title", title);
+        formData.append("caption", caption);
+        formData.append("image", image);
+
+        try {
+
+            const res = await API.post(
+                "/post/create-post",
+                formData
+            );
+
+            alert(res.data.message);
+
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    return (
+        <div>
+            <h1>Create Post</h1>
+
+            <form onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    placeholder="Title"
+                    onChange={(e) => setTitle(e.target.value)}
+                />
+
+                <textarea
+                    placeholder="Caption"
+                    onChange={(e) => setCaption(e.target.value)}
+                />
+
+                <input
+                    type="file"
+                    onChange={(e) =>
+                        setImage(e.target.files[0])
+                    }
+                />
+
+                <button type="submit">
+                    Create Post
+                </button>
+            </form>
+        </div>
+    );
 }
 
-export default CreatePost
+export default CreatePost;
