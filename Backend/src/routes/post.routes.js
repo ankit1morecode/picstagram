@@ -9,5 +9,7 @@ let upload = multer({storage:multer.memoryStorage()});
 
 router.post("/create-post",authMiddleware.userAuth,upload.single("image"),postControllers.createPost);
 router.get("/feed",authMiddleware.userAuth,postControllers.getPosts);
+router.post("/like/:id",authMiddleware.userAuth,postControllers.likePosts);
+router.post("/comment/:id",authMiddleware.userAuth,postControllers.commentPosts);
 
 module.exports = router;

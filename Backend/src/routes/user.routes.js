@@ -9,4 +9,6 @@ let upload = multer({storage:multer.memoryStorage()});
 
 router.patch("/update/:id",authMiddleware.userAuth,userController.updateUser);
 
+
+
 module.exports = router;
